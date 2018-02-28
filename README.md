@@ -1,2 +1,2 @@
 # type-racer
-## Alternative verion of typeracer.com
+### Alternative verion of typeracer.com
