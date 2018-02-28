@@ -23,12 +23,16 @@ function getText() {
 
 function checkInput(input) {
     if (!isError) {
+        if (input === textLeft) {
+            document.body.style.backgroundColor = "#c9f8cc";
+            textLeft = "";
+        }
+
         for (let i = 0; i < input.length - 1; i++) {
             if (input[i] !== textLeft[i]) {
                 document.body.style.backgroundColor = "#f8b6b2";
-                console.log(input[i] + textLeft[i]);
                 isError = true;
-                break;
+                return;
             }
         }
 
@@ -39,10 +43,20 @@ function checkInput(input) {
 }
 
 function controlErase(input) {
-    document.body.style.backgroundColor = "#ffffff";
+    if (isError) {
+        for (let i = 0; i < input.length - 1; i++) {
+            if (input[i] !== textLeft[i]) {
+                //still an error
+                return;
+            }
+        }
+        document.body.style.backgroundColor = "#ffffff";
+        isError = false;
+    }
 }
 
 function formInput() {
+    //init
     let input = document.forms["myForm"]["form"].value;
 
     if (!textLeft) {
@@ -50,14 +64,25 @@ function formInput() {
     }
     if (!prevInput && input) {
         prevInput = input;
-
     }
 
-    if (input[input.length - 1] === " ") {
-        checkInput(input, textLeft);
+    //logic
+    if (input && input[0] !== " ") {
+        if (input[input.length - 1] === " ") {
+            checkInput(input, textLeft);
+        }
+        if (prevInput.length - input.length === 1) {
+            controlErase(input, textLeft);
+        }
     }
-    if (prevInput.length - input.length === 1) {
-        controlErase(input, textLeft);
+
+    prevInput = input;
+}
+
+function confirmText() {
+    let input = document.forms["myForm"]["form"].value;
+    if (input === textLeft) {
+        document.body.style.backgroundColor = "#c9f8cc";
     }
 }
 

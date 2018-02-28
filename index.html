@@ -13,9 +13,9 @@
     <div id="text-to-input">
         <p id="text"></p>
     </div>
-    <form id="form" name="myForm" onkeyup="return formInput();">
+    <form id="form" name="myForm" onkeyup="return formInput();" onsubmit="return confirmText()">
         <label>
-            <input type="text" name="form">
+            <input type="text" name="form" autocomplete="off">
         </label>
     </form>
 </div>
