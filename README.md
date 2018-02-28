@@ -1,2 +1,2 @@
 # type-racer
-### Alternative verion of [typeracer.com](typeracer.com)
+### Alternative verion of [typeracer.com](https://typeracer.com)
