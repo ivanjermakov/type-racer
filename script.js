@@ -1,6 +1,8 @@
 let textLeft;
 let prevInput;
-let isError = false;
+let isMistake = false;
+let prevMistakeState = false;
+let mistakeCount = 0;
 
 function getText() {
     let request = new XMLHttpRequest();
@@ -22,43 +24,72 @@ function getText() {
 }
 
 function checkInput(input) {
-    if (!isError) {
+    if (!input) {
+        isMistake = false;
+        document.body.style.backgroundColor = "#ffffff";
+    }
+    for (let i = 0; i < input.length; i++) {
+        if (input[i] !== textLeft[i]) {
+            isMistake = true;
+            document.body.style.backgroundColor = "#f8b6b2";
+        }
+    }
+}
+
+function checkWords(input) {
+    if (!isMistake) {
         if (input === textLeft) {
             document.body.style.backgroundColor = "#c9f8cc";
             textLeft = "";
+            document.forms["myForm"]["form"].disabled = true;
         }
 
         for (let i = 0; i < input.length - 1; i++) {
             if (input[i] !== textLeft[i]) {
                 document.body.style.backgroundColor = "#f8b6b2";
-                isError = true;
+                isMistake = true;
                 return;
             }
         }
 
         textLeft = textLeft.substr(input.length);
-        console.log(textLeft);
+        // console.log(textLeft);
         document.forms["myForm"]["form"].value = "";
     }
 }
 
 function controlErase(input) {
-    if (isError) {
+    if (isMistake) {
         for (let i = 0; i < input.length - 1; i++) {
             if (input[i] !== textLeft[i]) {
-                //still an error
+                //still an mistake
                 return;
             }
         }
         document.body.style.backgroundColor = "#ffffff";
-        isError = false;
+        isMistake = false;
     }
 }
 
-function formInput() {
-    //init
+function confirmText() {
     let input = document.forms["myForm"]["form"].value;
+    if (input === textLeft) {
+        document.body.style.backgroundColor = "#c9f8cc";
+        document.forms["myForm"]["form"].value = "";
+        document.forms["myForm"]["form"].disabled = true;
+    }
 
+    return false;
+}
+
+function formInput() {
+    //fix unprintable symbols
+    let input = document.forms["myForm"]["form"].value;
+    input.replace(/«/g, '"');
+    input.replace(/»/g, '"');
+    document.forms["myForm"]["form"].value = input;
+
+    //init
     if (!textLeft) {
         textLeft = document.getElementById("text-to-input").innerText;
     }
@@ -67,23 +98,32 @@ function formInput() {
     }
 
     //logic
+    checkInput(input);
+
     if (input && input[0] !== " ") {
         if (input[input.length - 1] === " ") {
-            checkInput(input, textLeft);
+            checkWords(input, textLeft);
         }
         if (prevInput.length - input.length === 1) {
-            controlErase(input, textLeft);
+            controlErase(prevInput, textLeft);
+        }
+        if (input === textLeft || !textLeft) {
+            document.forms["myForm"]["form"].value = "";
+        }
+        if (input === textLeft || !textLeft) {
+            document.body.style.backgroundColor = "#c9f8cc";
+            document.forms["myForm"]["form"].value = "";
+            document.forms["myForm"]["form"].disabled = true;
         }
     }
 
-    prevInput = input;
-}
-
-function confirmText() {
-    let input = document.forms["myForm"]["form"].value;
-    if (input === textLeft) {
-        document.body.style.backgroundColor = "#c9f8cc";
+    if (prevMistakeState === false && isMistake === true) {
+        mistakeCount++;
+        document.getElementById("mistake-counter").textContent = "Mistakes: " + mistakeCount.toString();
     }
+
+    prevMistakeState = isMistake;
+    prevInput = input;
 }
 
 getText();
