@@ -35,7 +35,15 @@ input:focus {
     border: 2px solid #323232;
 }
 
+input:disabled {
+    background-color: #c9f8cc;
+}
+
 #text-to-input {
     margin-top: 30%;
     font-size: 30px;
+}
+
+#correct {
+    background-color: #c9f8cc;
 }

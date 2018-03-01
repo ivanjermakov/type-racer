@@ -11,11 +11,11 @@
 <body>
 <div class="wrapper">
     <div id="text-to-input">
-        <p id="text"></p>
+        <p id="text"><span id="correct"></span></p>
     </div>
     <form id="form" name="myForm" onkeyup="return formInput();" onsubmit="return confirmText()">
         <label>
-            <input type="text" name="form" autocomplete="off" autofocus>
+            <input id="type-input" type="text" name="form" autocomplete="off" autofocus>
         </label>
     </form>
     <div class="stats">
