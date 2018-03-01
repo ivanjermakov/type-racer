@@ -11,25 +11,6 @@ let end;
 
 let formStyle;
 
-function getText() {
-    let request = new XMLHttpRequest();
-    request.onreadystatechange = function () {
-        if (this.readyState === 4 && this.status === 200) {
-
-            let data = JSON.parse(request.responseText);
-            let text = data.texts[Math.floor(Math.random() * data.texts.length)];
-
-            if (text) {
-                document.getElementById("text").innerText = text.text;
-            } else {
-                document.getElementById("text").innerText = "Something went wrong. Please, reload the page.";
-            }
-        }
-    };
-    request.open("GET", "src/rus.json", true);
-    request.send();
-}
-
 function checkInput(input) {
     if (!input) {
         isMistake = false;
@@ -125,13 +106,8 @@ function confirmText() {
 function formInput() {
     formStyle = document.getElementById("type-input").style;
 
-    //fix unprintable symbols
-    let input = document.forms["myForm"]["form"].value;
-    input.replace(/«/g, '"');
-    input.replace(/»/g, '"');
-    document.forms["myForm"]["form"].value = input;
-
     //init
+    let input = document.forms["myForm"]["form"].value;
     if (!textLeft) {
         textLeft = document.getElementById("text").innerText;
     }
