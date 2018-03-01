@@ -4,6 +4,9 @@ let isMistake = false;
 let prevMistakeState = false;
 let mistakeCount = 0;
 
+let start;
+let end;
+
 function getText() {
     let request = new XMLHttpRequest();
     request.onreadystatechange = function () {
@@ -39,6 +42,8 @@ function checkInput(input) {
 function checkWords(input) {
     if (!isMistake) {
         if (input === textLeft) {
+            end = new Date();
+            calculateStats();
             document.body.style.backgroundColor = "#c9f8cc";
             textLeft = "";
             document.forms["myForm"]["form"].disabled = true;
@@ -74,6 +79,8 @@ function controlErase(input) {
 function confirmText() {
     let input = document.forms["myForm"]["form"].value;
     if (input === textLeft) {
+        end = new Date();
+        calculateStats();
         document.body.style.backgroundColor = "#c9f8cc";
         document.forms["myForm"]["form"].value = "";
         document.forms["myForm"]["form"].disabled = true;
@@ -97,7 +104,12 @@ function formInput() {
         prevInput = input;
     }
 
-    //logic
+    //time count
+    if (input.length === 1 && textLeft === document.getElementById("text-to-input").innerText) {
+        start = new Date();
+    }
+
+    // logic
     checkInput(input);
 
     if (input && input[0] !== " ") {
@@ -111,6 +123,8 @@ function formInput() {
             document.forms["myForm"]["form"].value = "";
         }
         if (input === textLeft || !textLeft) {
+            end = new Date();
+            calculateStats();
             document.body.style.backgroundColor = "#c9f8cc";
             document.forms["myForm"]["form"].value = "";
             document.forms["myForm"]["form"].disabled = true;
@@ -124,6 +138,14 @@ function formInput() {
 
     prevMistakeState = isMistake;
     prevInput = input;
+}
+
+function calculateStats() {
+    let timeElapsed = (end - start) / 60000;
+
+    let initText = document.getElementById("text-to-input").innerText;
+    let wordsCount = initText.split(' ').length;
+    document.getElementById("wpm").innerText = "WPM: " + (wordsCount / timeElapsed).toFixed(0);
 }
 
 getText();
