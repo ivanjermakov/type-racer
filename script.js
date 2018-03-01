@@ -33,14 +33,31 @@ function getText() {
 function checkInput(input) {
     if (!input) {
         isMistake = false;
-        // document.body.style.backgroundColor = "#ffffff";
         formStyle.border = "2px solid #686868";
     }
+
     for (let i = 0; i < input.length; i++) {
         if (input[i] !== textLeft[i]) {
             isMistake = true;
             // document.body.style.backgroundColor = "#f8b6b2";
             formStyle.border = "2px solid #f8b6b2";
+        }
+    }
+
+    if (input && input[0] !== " ") {
+        if (input[input.length - 1] === " ") {
+            checkWords(input, textLeft);
+        }
+        if (prevInput.length - input.length === 1) {
+            controlErase(prevInput, textLeft);
+        }
+        if (input === textLeft + " " || !textLeft) {
+            end = new Date();
+            calculateStats();
+
+            textLeft = "";
+            textDone = document.getElementById("text").innerText;
+            textIsTyped();
         }
     }
 }
@@ -87,11 +104,10 @@ function controlErase(input) {
     if (isMistake) {
         for (let i = 0; i < input.length - 1; i++) {
             if (input[i] !== textLeft[i]) {
-                //still an mistake
+                //still a mistake
                 return;
             }
         }
-        // document.body.style.backgroundColor = "#ffffff";
         formStyle.border = "2px solid #686868";
         isMistake = false;
     }
@@ -100,15 +116,7 @@ function controlErase(input) {
 function confirmText() {
     let input = document.forms["myForm"]["form"].value;
     if (input === textLeft) {
-        end = new Date();
-        calculateStats();
-        // document.body.style.backgroundColor = "#c9f8cc";
-        formStyle.border = "2px solid #c9f8cc";
-        document.forms["myForm"]["form"].value = "";
-        document.forms["myForm"]["form"].disabled = true;
-
-        let textToInput = document.getElementById("text");
-        textToInput.innerHTML = "<span id='correct'>" + textToInput.innerText + "</span>";
+        textIsTyped();
     }
 
     return false;
@@ -139,26 +147,7 @@ function formInput() {
     // logic
     checkInput(input);
 
-    if (input && input[0] !== " ") {
-        if (input[input.length - 1] === " ") {
-            checkWords(input, textLeft);
-        }
-        if (prevInput.length - input.length === 1) {
-            controlErase(prevInput, textLeft);
-        }
-        if (input === textLeft + " " || !textLeft) {
-            end = new Date();
-            calculateStats();
-            // document.body.style.backgroundColor = "#c9f8cc";
-            formStyle.border = "2px solid #c9f8cc";
-            document.forms["myForm"]["form"].value = "";
-            document.forms["myForm"]["form"].disabled = true;
-            
-            let textToInput = document.getElementById("text");
-            textToInput.innerHTML = "<span id='correct'>" + textToInput.innerText + "</span>";
-        }
-    }
-
+    //count mistakes
     if (prevMistakeState === false && isMistake === true) {
         mistakeCount++;
         document.getElementById("mistake-counter").textContent = "Mistakes: " + mistakeCount.toString();
@@ -166,8 +155,20 @@ function formInput() {
 
     updateTextToInput();
 
+    //lifetime
     prevMistakeState = isMistake;
     prevInput = input;
+}
+
+function textIsTyped() {
+    end = new Date();
+    calculateStats();
+    formStyle.border = "2px solid #c9f8cc";
+    document.forms["myForm"]["form"].value = "";
+    document.forms["myForm"]["form"].disabled = true;
+
+    let textToInput = document.getElementById("text");
+    textToInput.innerHTML = "<span id='correct'>" + textToInput.innerText + "</span>";
 }
 
 function calculateStats() {
