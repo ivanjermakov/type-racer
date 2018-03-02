@@ -130,6 +130,7 @@ function formInput() {
     }
 
     updateTextToInput();
+    calculateRuntimeStats();
 
     //lifetime
     prevMistakeState = isMistake;
@@ -137,7 +138,6 @@ function formInput() {
 }
 
 function textIsTyped() {
-    end = new Date();
     calculateStats();
     formStyle.border = "2px solid #c9f8cc";
     document.forms["myForm"]["form"].value = "";
@@ -147,12 +147,27 @@ function textIsTyped() {
     textToInput.innerHTML = "<span id='correct'>" + textToInput.innerText + "</span>";
 }
 
-function calculateStats() {
+function calculateRuntimeStats() {
+    end = new Date();
     let timeElapsed = (end - start) / 60000;
+    if (timeElapsed && textDone) {
+        let wordsCount = textDone.split(' ').length;
+        document.getElementById("wpm").innerText = "WPM: " + (wordsCount / timeElapsed).toFixed(0);
+        let charsCount = textDone.length;
+        document.getElementById("cpm").innerText = "CPM: " + (charsCount / timeElapsed).toFixed(0);
+    }
+}
 
-    let initText = document.getElementById("text").innerText;
-    let wordsCount = initText.split(' ').length;
-    document.getElementById("wpm").innerText = "WPM: " + (wordsCount / timeElapsed).toFixed(0);
+function calculateStats() {
+    end = new Date();
+    let timeElapsed = (end - start) / 60000;
+    if (timeElapsed) {
+        let initText = document.getElementById("text").innerText;
+        let wordsCount = initText.split(' ').length;
+        document.getElementById("wpm").innerText = "WPM: " + (wordsCount / timeElapsed).toFixed(0);
+        let charsCount = initText.length;
+        document.getElementById("cpm").innerText = "CPM: " + (charsCount / timeElapsed).toFixed(0);
+    }
 }
 
 getText();

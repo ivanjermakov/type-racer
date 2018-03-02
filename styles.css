@@ -23,8 +23,11 @@ body {
 .stats {
     font-size: 20px;
     text-align: right;
-    padding: 0;
-    margin: 0;
+    margin: 10px 0;
+}
+
+#mistake-counter, #wpm, #cpm {
+    margin: 0 10px;
 }
 
 form {
